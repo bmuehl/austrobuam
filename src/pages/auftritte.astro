@@ -1,0 +1,64 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import ConcertList from '@components/ConcertList.astro';
+import { getConcerts, getPastConcerts, getUpcomingConcerts } from '@lib/content';
+
+const concerts = await getConcerts();
+const upcoming = getUpcomingConcerts(concerts);
+const past = getPastConcerts(concerts);
+---
+
+<BaseLayout title="Auftritte">
+  <section class="page-hero compact-hero performances-intro">
+    <p class="eyebrow">Live</p>
+    <h1>Auftritte</h1>
+    <p>Alle bestätigten Konzerte, privaten Events und öffentlichen Austropop-Abende auf einen Blick.</p>
+  </section>
+
+  <section class="content-band performances-content">
+    <div class="performance-tabs" data-performance-tabs>
+      <div class="tab-bar" role="tablist" aria-label="Auftritte filtern">
+        <button class="tab-button active" type="button" role="tab" aria-selected="true" aria-controls="upcoming-performances" id="tab-upcoming" data-tab-target="upcoming-performances">
+          <span class="tab-label">Kommende<span class="tab-label-suffix"> Auftritte</span></span>
+          <span class="tab-count">{upcoming.length}</span>
+        </button>
+        <button class="tab-button" type="button" role="tab" aria-selected="false" aria-controls="past-performances" id="tab-past" data-tab-target="past-performances">
+          <span class="tab-label">Vergangene<span class="tab-label-suffix"> Auftritte</span></span>
+          <span class="tab-count">{past.length}</span>
+        </button>
+      </div>
+
+      <div class="tab-panel" id="upcoming-performances" role="tabpanel" aria-labelledby="tab-upcoming">
+        <ConcertList concerts={upcoming} emptyText="Keine kommenden Auftritte vorhanden." />
+      </div>
+      <div class="tab-panel" id="past-performances" role="tabpanel" aria-labelledby="tab-past" hidden>
+        <ConcertList concerts={past} emptyText="Noch keine vergangenen Auftritte vorhanden." />
+      </div>
+    </div>
+  </section>
+
+  <script>
+    const tabRoot = document.querySelector('[data-performance-tabs]');
+
+    if (tabRoot instanceof HTMLElement) {
+      const buttons = [...tabRoot.querySelectorAll<HTMLButtonElement>('[data-tab-target]')];
+      const panels = [...tabRoot.querySelectorAll<HTMLElement>('.tab-panel')];
+
+      buttons.forEach((button) => {
+        button.addEventListener('click', () => {
+          const target = button.dataset.tabTarget;
+
+          buttons.forEach((item) => {
+            const isActive = item === button;
+            item.classList.toggle('active', isActive);
+            item.setAttribute('aria-selected', String(isActive));
+          });
+
+          panels.forEach((panel) => {
+            panel.hidden = panel.id !== target;
+          });
+        });
+      });
+    }
+  </script>
+</BaseLayout>

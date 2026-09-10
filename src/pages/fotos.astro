@@ -1,0 +1,18 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import GalleryGrid from '@components/GalleryGrid.astro';
+import { getGalleryImages } from '@lib/content';
+
+const images = await getGalleryImages();
+---
+
+<BaseLayout title="Fotos">
+  <section class="page-hero compact-hero gallery-intro">
+    <p class="eyebrow">Galerie</p>
+    <h1>Bilder von Band, Bühne und Austropop-Momenten.</h1>
+  </section>
+
+  <section class="content-band gallery-content">
+    <GalleryGrid images={images} />
+  </section>
+</BaseLayout>

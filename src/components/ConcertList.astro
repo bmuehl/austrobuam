@@ -1,0 +1,48 @@
+---
+import type { Concert } from '@lib/content';
+
+interface Props {
+  concerts: Concert[];
+  compact?: boolean;
+  emptyText?: string;
+}
+
+const { concerts, compact = false, emptyText = 'Neue Auftritte werden gerade abgestimmt.' } = Astro.props;
+
+const formatConcertDate = (value: string) => {
+  const date = new Date(value);
+
+  return {
+    day: new Intl.DateTimeFormat('de-AT', { day: '2-digit' }).format(date),
+    month: new Intl.DateTimeFormat('de-AT', { month: 'short' }).format(date).replace('.', ''),
+    year: new Intl.DateTimeFormat('de-AT', { year: 'numeric' }).format(date),
+    weekday: new Intl.DateTimeFormat('de-AT', { weekday: 'short' }).format(date).replace('.', ''),
+    time: new Intl.DateTimeFormat('de-AT', { hour: '2-digit', minute: '2-digit' }).format(date),
+  };
+};
+---
+
+{concerts.length > 0 ? (
+  <div class:list={['concert-list', { compact }]}>
+    {concerts.map((concert) => (
+      <article class="concert-item">
+        <time class="concert-date" datetime={concert.startsAt}>
+          <span class="concert-weekday">{formatConcertDate(concert.startsAt).weekday}</span>
+          <span class="concert-day">{formatConcertDate(concert.startsAt).day}</span>
+          <span class="concert-month">{formatConcertDate(concert.startsAt).month}</span>
+          <span class="concert-year">{formatConcertDate(concert.startsAt).year}</span>
+          <span class="concert-time">{formatConcertDate(concert.startsAt).time} Uhr</span>
+        </time>
+        <div>
+          <h3>{concert.title}</h3>
+          <p>{concert.venue}{concert.address ? `, ${concert.address}` : ''}</p>
+          {concert.status === 'cancelled' && <span class="status cancelled">Abgesagt</span>}
+          {concert.status === 'soldOut' && <span class="status">Ausverkauft</span>}
+        </div>
+        {concert.infoUrl && <a class="text-link" href={concert.infoUrl}>Details</a>}
+      </article>
+    ))}
+  </div>
+) : (
+  <p class="empty-state">{emptyText}</p>
+)}

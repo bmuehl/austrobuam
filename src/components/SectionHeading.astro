@@ -1,0 +1,13 @@
+---
+interface Props {
+  eyebrow?: string;
+  title: string;
+  text?: string;
+}
+---
+
+<div class="section-heading">
+  {Astro.props.eyebrow && <p class="eyebrow">{Astro.props.eyebrow}</p>}
+  <h2>{Astro.props.title}</h2>
+  {Astro.props.text && <p>{Astro.props.text}</p>}
+</div>

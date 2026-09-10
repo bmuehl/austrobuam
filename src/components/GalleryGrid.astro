@@ -1,0 +1,10 @@
+---
+import type { GalleryImage } from '@lib/content';
+import GalleryLightbox from './GalleryLightbox';
+
+interface Props {
+  images: GalleryImage[];
+}
+---
+
+<GalleryLightbox images={Astro.props.images} client:visible />

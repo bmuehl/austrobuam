@@ -1,0 +1,45 @@
+---
+import type { SiteSettings } from '@lib/content';
+
+interface Props {
+  settings: SiteSettings;
+}
+
+const { settings } = Astro.props;
+const accessKey = import.meta.env.PUBLIC_WEB3FORMS_ACCESS_KEY;
+---
+
+<section class="contact-panel" aria-labelledby="kontaktformular">
+  <div>
+    <p class="eyebrow">Buchung & Kontakt</p>
+    <h2 id="kontaktformular">Bereit fuer Austropop live?</h2>
+    <p>Schick uns Datum, Ort und Rahmen der Veranstaltung. Wir melden uns rasch mit den nächsten Schritten.</p>
+    <a class="text-link" href={`mailto:${settings.bookingEmail}`}>{settings.bookingEmail}</a>
+  </div>
+
+  {accessKey ? (
+    <form action="https://api.web3forms.com/submit" method="POST">
+      <input type="hidden" name="access_key" value={accessKey} />
+      <input type="checkbox" name="botcheck" class="botcheck" tabindex="-1" autocomplete="off" />
+      <label>
+        Name
+        <input name="name" autocomplete="name" required />
+      </label>
+      <label>
+        E-Mail
+        <input type="email" name="email" autocomplete="email" required />
+      </label>
+      <label>
+        Nachricht
+        <textarea name="message" rows="5" required></textarea>
+      </label>
+      <p class="form-note">Mit dem Absenden werden deine Angaben zur Bearbeitung der Anfrage verarbeitet. Details stehen in der Datenschutzerklärung.</p>
+      <button type="submit">Anfrage senden</button>
+    </form>
+  ) : (
+    <div class="form-placeholder">
+      <h3>Kontaktformular vorbereiten</h3>
+      <p>Setze `PUBLIC_WEB3FORMS_ACCESS_KEY`, damit dieses Formular live Anfragen versendet. Bis dahin funktioniert die Buchung per E-Mail.</p>
+    </div>
+  )}
+</section>

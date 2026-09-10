@@ -1,0 +1,19 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import MemberGrid from '@components/MemberGrid.astro';
+import { getBandMembers } from '@lib/content';
+
+const members = await getBandMembers();
+---
+
+<BaseLayout title="Band">
+  <section class="page-hero compact-hero band-intro">
+    <p class="eyebrow">Die Band</p>
+    <h1>Fünf Musiker, ein Austropop-Abend.</h1>
+    <p>Jeder bringt eigene Geschichte, Klangfarbe und Buehnenerfahrung mit. Zusammen entsteht der Sound der Original Austrobuam.</p>
+  </section>
+
+  <section class="content-band band-members">
+    <MemberGrid members={members} />
+  </section>
+</BaseLayout>

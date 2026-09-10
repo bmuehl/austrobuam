@@ -1,0 +1,104 @@
+---
+import type { SiteSettings } from '@lib/content';
+
+interface Props {
+  settings: SiteSettings;
+  immersive?: boolean;
+}
+
+const { settings, immersive = false } = Astro.props;
+const leftLinks = [
+  { href: '/band/', label: 'Band' },
+  { href: '/auftritte/', label: 'Auftritte' },
+];
+const rightLinks = [
+  { href: '/fotos/', label: 'Fotos' },
+  { href: '/kontakt/', label: 'Kontakt' },
+];
+const currentPath = Astro.url.pathname;
+---
+
+<header class:list={['site-header', { 'site-header-immersive': immersive }]}>
+  <div class="site-header-inner">
+    <nav class="main-nav nav-left" aria-label="Hauptnavigation links">
+      {leftLinks.map((link) => <a href={link.href}>{link.label}</a>)}
+    </nav>
+    <a class="brand" href="/" aria-label="Original Austrobuam Startseite">
+      <img src="/images/austrobuam.png" alt={settings.title} width="3780" height="531" />
+    </a>
+    <nav class="main-nav nav-right" aria-label="Hauptnavigation rechts">
+      {rightLinks.map((link) => <a href={link.href}>{link.label}</a>)}
+    </nav>
+    <button class="mobile-menu-toggle" type="button" aria-label="Menü öffnen" aria-expanded="false" aria-controls="mobile-navigation">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <div class="mobile-menu-scrim" aria-hidden="true"></div>
+  <div class="mobile-menu" id="mobile-navigation" inert>
+    <div class="mobile-menu-clip">
+      <nav class="mobile-menu-links" aria-label="Hauptnavigation">
+        {[...leftLinks, ...rightLinks].map((link, index) => (
+          <a href={link.href} aria-current={currentPath === link.href ? 'page' : undefined} style={`--link-index: ${index}`}>
+            <span>{link.label}</span><span aria-hidden="true">↗</span>
+          </a>
+        ))}
+      </nav>
+    </div>
+  </div>
+</header>
+
+<style>
+  .site-header-immersive { position: fixed; inset: 0 0 auto; background: transparent; border-color: #ffffff30; backdrop-filter: none; transition: background 200ms ease, box-shadow 200ms ease; }
+  @media (min-width: 901px) {
+  .site-header-immersive:not(.is-scrolled):not(.menu-open) .site-header-inner { background: transparent; }
+  .site-header-immersive:not(.is-scrolled):not(.menu-open) .brand img { filter: brightness(0) invert(1); }
+  .site-header-immersive:not(.is-scrolled):not(.menu-open):not(.wordmark-ready) .brand img { visibility: hidden; }
+  .site-header-immersive.wordmark-ready .brand img { transform-origin: top left; transform: translate(var(--wordmark-x, 0px), var(--wordmark-y, 0px)) scale(var(--wordmark-scale, 1)); opacity: var(--wordmark-opacity, 1); }
+  .site-header-immersive.wordmark-ready:not(.is-scrolled) .brand img { filter: brightness(0) invert(1) drop-shadow(0 2px 8px #0009); }
+  .site-header-immersive:not(.is-scrolled):not(.menu-open) .main-nav a,
+  .site-header-immersive:not(.is-scrolled):not(.menu-open) .mobile-menu-toggle { color: white; }
+  .site-header-immersive:not(.is-scrolled):not(.menu-open) .main-nav a:hover,
+  .site-header-immersive:not(.is-scrolled):not(.menu-open) .main-nav a:focus-visible { background: #ffffff25; }
+  .site-header-immersive.is-scrolled, .site-header-immersive.menu-open { background: #fffaf1; border-color: #17141215; box-shadow: 0 2px 16px #0000000c; }
+    .site-header-immersive .nav-left { transform: translateX(var(--nav-shift, 0px)); }
+    .site-header-immersive .nav-right { transform: translateX(calc(-1 * var(--nav-shift, 0px))); }
+  }
+  @media (max-width: 900px) {
+    .site-header-immersive { position: sticky; background: #fffaf1; border-color: #17141215; transition: none; }
+    .site-header-immersive .site-header-inner { background: #fffaf1; }
+  }
+  @media (prefers-reduced-motion: reduce) { .site-header-immersive { transition: none; } }
+</style>
+
+<script>
+  const header = document.querySelector<HTMLElement>('.site-header');
+  const toggle = header?.querySelector<HTMLButtonElement>('.mobile-menu-toggle');
+  const menu = header?.querySelector<HTMLElement>('.mobile-menu');
+  if (header && toggle && menu) {
+    const setOpen = (open: boolean) => {
+      header.classList.toggle('menu-open', open);
+      toggle.setAttribute('aria-expanded', String(open));
+      toggle.setAttribute('aria-label', open ? 'Menü schließen' : 'Menü öffnen');
+      menu.inert = !open;
+      header.dispatchEvent(new Event('header-menu-change'));
+    };
+    toggle.addEventListener('click', () => setOpen(toggle.getAttribute('aria-expanded') !== 'true'));
+    header.querySelector('.mobile-menu-scrim')?.addEventListener('click', () => setOpen(false));
+    menu.addEventListener('click', (event) => {
+      if ((event.target as Element).closest('a')) setOpen(false);
+    });
+    header.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && toggle.getAttribute('aria-expanded') === 'true') {
+        setOpen(false);
+        toggle.focus();
+      }
+    });
+    header.addEventListener('focusout', (event) => {
+      if (!header.contains(event.relatedTarget as Node | null)) setOpen(false);
+    });
+    matchMedia('(min-width: 901px)').addEventListener('change', (event) => {
+      if (event.matches) setOpen(false);
+    });
+    window.addEventListener('pageshow', () => setOpen(false));
+  }
+</script>

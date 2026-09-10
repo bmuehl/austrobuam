@@ -1,0 +1,16 @@
+---
+import type { BandMember } from '@lib/content';
+import MemberSpotlight from './MemberSpotlight';
+
+interface Props {
+  members: BandMember[];
+}
+
+const members = Astro.props.members;
+---
+
+{members.length > 0 ? (
+  <MemberSpotlight members={members} client:visible />
+) : (
+  <p class="empty-state">Bandmitglieder werden gerade gepflegt.</p>
+)}

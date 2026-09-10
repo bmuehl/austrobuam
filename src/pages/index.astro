@@ -1,0 +1,100 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import HomeStage from '@components/HomeStage.astro';
+import { getConcerts, getSiteSettings, getUpcomingConcerts, formatDateTime } from '@lib/content';
+
+const settings = await getSiteSettings();
+const nextConcert = getUpcomingConcerts(await getConcerts())[0];
+---
+
+<BaseLayout description={settings.intro} immersiveHeader={Boolean(settings.homepagePhoto?.image)}>
+  {settings.homepagePhoto?.image && (
+    <HomeStage photo={settings.homepagePhoto} />
+  )}
+  {nextConcert && (
+    <a class="home-concert-strip" href="/auftritte/">
+      <span>Nächster Auftritt</span>
+      <strong>{formatDateTime(nextConcert.startsAt)}</strong>
+      {nextConcert.venue && <span>{nextConcert.venue}</span>}
+      <span aria-hidden="true">&rarr;</span>
+    </a>
+  )}
+  <section class="home-hero">
+    <div class="home-copy">
+      <p class="eyebrow">Handgemacht. Mit Leidenschaft.</p>
+      {settings.homepagePhoto?.image ? <h2>{settings.tagline}</h2> : <h1>{settings.tagline}</h1>}
+      <p>{settings.intro}</p>
+      {nextConcert && (
+        <a class="next-date-pill" href="/auftritte/">
+          <span>Nächster Auftritt</span>
+          <strong>{formatDateTime(nextConcert.startsAt)}</strong>
+        </a>
+      )}
+      <div class="hero-actions">
+        <a class="button primary" href="/auftritte/">Auftritte</a>
+        <a class="button secondary" href="/kontakt/">Band buchen</a>
+      </div>
+    </div>
+  </section>
+  <div class="home-album">
+    <div class="home-logo-wrap">
+      <div class="home-logo-frame">
+        <div class="home-cover-art">
+          <img src="/images/logo.webp" alt="Original Austrobuam Logo mit Musiknotenbaum" loading="lazy" />
+        </div>
+      </div>
+    </div>
+  </div>
+  <style>
+    .home-hero { min-height: 0; }
+    .home-copy h2 { max-width: 14ch; font-size: var(--page-heading-size); line-height: 1.18; }
+    .home-album { display: grid; place-items: center; padding: 0 1.5rem 5rem; }
+    .home-album .home-logo-wrap { width: min(100%, 440px); min-width: 0; }
+    .home-album .home-logo-wrap, .home-album .home-cover-art::after { animation-play-state: paused; }
+    .home-album.is-visible .home-logo-wrap, .home-album.is-visible .home-cover-art::after { animation-play-state: running; }
+    .home-concert-strip { display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 0.6rem 2rem; padding: 1.2rem 1.5rem; background: #b91f32; color: white; text-decoration: none; font-size: 0.875rem; }
+    .home-concert-strip > span:first-child { text-transform: uppercase; font-size: 0.75rem; font-weight: 800; }
+    .home-concert-strip:hover { background: #971b2a; }
+    .home-concert-strip:focus-visible { outline: 3px solid white; outline-offset: -6px; }
+    @media (max-width: 600px) { .home-concert-strip { flex-direction: column; gap: 0.4rem; text-align: center; } .home-concert-strip > span:last-child { display: none; } }
+  </style>
+  <script>
+    const logoWrap = document.querySelector('.home-logo-wrap');
+    const logoFrame = document.querySelector('.home-logo-frame');
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const album = document.querySelector('.home-album');
+    if (album) {
+      const observer = new IntersectionObserver(([entry]) => {
+        if (entry.isIntersecting) {
+          album.classList.add('is-visible');
+          observer.disconnect();
+        }
+      }, { threshold: 0.15 });
+      observer.observe(album);
+    }
+
+    if (logoWrap instanceof HTMLElement && logoFrame instanceof HTMLElement && !reduceMotion.matches) {
+      logoWrap.addEventListener('pointermove', (event) => {
+        const rect = logoWrap.getBoundingClientRect();
+        const x = (event.clientX - rect.left) / rect.width - 0.5;
+        const y = (event.clientY - rect.top) / rect.height - 0.5;
+
+        logoFrame.style.setProperty('--tilt-x', `${(-y * 5).toFixed(2)}deg`);
+        logoFrame.style.setProperty('--tilt-y', `${(x * 7).toFixed(2)}deg`);
+        logoFrame.style.setProperty('--move-x', `${(x * 14).toFixed(2)}px`);
+        logoFrame.style.setProperty('--move-y', `${(y * 10).toFixed(2)}px`);
+        logoFrame.style.setProperty('--glow-x', `${((x + 0.5) * 100).toFixed(2)}%`);
+        logoFrame.style.setProperty('--glow-y', `${((y + 0.5) * 100).toFixed(2)}%`);
+      });
+
+      logoWrap.addEventListener('pointerleave', () => {
+        logoFrame.style.removeProperty('--tilt-x');
+        logoFrame.style.removeProperty('--tilt-y');
+        logoFrame.style.removeProperty('--move-x');
+        logoFrame.style.removeProperty('--move-y');
+        logoFrame.style.removeProperty('--glow-x');
+        logoFrame.style.removeProperty('--glow-y');
+      });
+    }
+  </script>
+</BaseLayout>

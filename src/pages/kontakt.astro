@@ -1,0 +1,17 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import ContactForm from '@components/ContactForm.astro';
+import { getSiteSettings } from '@lib/content';
+
+const settings = await getSiteSettings();
+---
+
+<BaseLayout title="Kontakt">
+  <section class="page-hero compact-hero">
+    <p class="eyebrow">Kontakt</p>
+    <h1>Band buchen oder Frage stellen.</h1>
+    <p>Für Stadtfeste, private Feiern, Clubabende und Austropop-Veranstaltungen.</p>
+  </section>
+
+  <ContactForm settings={settings} />
+</BaseLayout>

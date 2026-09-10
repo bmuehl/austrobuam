@@ -1,0 +1,73 @@
+---
+import type { SiteSettings } from '@lib/content';
+import facebook from 'thesvg/facebook';
+import instagram from 'thesvg/instagram';
+import linkIcon from 'thesvg/link';
+import soundcloud from 'thesvg/soundcloud';
+import spotify from 'thesvg/spotify';
+import tiktok from 'thesvg/tiktok';
+import twitter from 'thesvg/twitter';
+import whatsapp from 'thesvg/whatsapp';
+import x from 'thesvg/x';
+import youtube from 'thesvg/youtube';
+
+interface Props {
+  settings: SiteSettings;
+}
+
+const { settings } = Astro.props;
+
+const getSocialIcon = (label: string, url: string) => {
+  const value = `${label} ${url}`.toLowerCase();
+
+  if (value.includes('facebook')) return facebook;
+  if (value.includes('instagram')) return instagram;
+  if (value.includes('youtube') || value.includes('youtu.be')) return youtube;
+  if (value.includes('spotify')) return spotify;
+  if (value.includes('soundcloud')) return soundcloud;
+  if (value.includes('tiktok')) return tiktok;
+  if (value.includes('whatsapp') || value.includes('wa.me')) return whatsapp;
+  if (value.includes('twitter')) return twitter;
+  if (value.includes('x.com')) return x;
+
+  return linkIcon;
+};
+
+const socialLinks = settings.socialLinks.map((link) => {
+  const icon = getSocialIcon(link.label, link.url);
+
+  return {
+    ...link,
+    icon,
+    svg: icon.variants?.mono || icon.svg,
+  };
+});
+---
+
+<footer class="site-footer">
+  <div>
+    <strong>{settings.title}</strong>
+    <p>{settings.tagline}</p>
+  </div>
+  <nav aria-label="Social Links">
+    {socialLinks.map((link) => (
+      <a
+        class="social-link"
+        href={link.url}
+        target="_blank"
+        rel="noreferrer"
+        aria-label={link.label}
+        style={`--brand-color: #${link.icon.hex};`}
+      >
+        <span class="social-icon" aria-hidden="true">
+          <Fragment set:html={link.svg} />
+        </span>
+        <span class="social-label">{link.label}</span>
+      </a>
+    ))}
+  </nav>
+  <nav aria-label="Rechtliches">
+    <a href="/impressum/">Impressum</a>
+    <a href="/datenschutz/">Datenschutz</a>
+  </nav>
+</footer>
