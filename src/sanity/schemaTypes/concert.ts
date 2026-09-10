@@ -35,7 +35,8 @@ export default defineType({
     }),
     defineField({
       name: 'poster', title: 'Plakat', type: 'image',
-      fields: [defineField({ name: 'alt', title: 'Bildbeschreibung', type: 'string' })],
+      // Keep existing values recognized without exposing a separate description field.
+      fields: [defineField({ name: 'alt', type: 'string', hidden: true, readOnly: true })],
     }),
     defineField({ name: 'infoUrl', title: 'Info/Tickets URL', type: 'url' }),
     defineField({

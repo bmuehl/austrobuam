@@ -81,7 +81,7 @@ const formatConcertDate = (value: string) => {
             <GalleryLightbox client:visible variant="poster" images={[{
               ...concert.poster,
               title: concert.title,
-              alt: concert.poster.alt || `Plakat: ${concert.title}`,
+              alt: `Plakat: ${concert.title}`,
             }]} />
           </div>
         )}
