@@ -161,6 +161,7 @@ export function getPastConcerts(concerts: Concert[]) {
 
 export function formatDateTime(value: string) {
   return new Intl.DateTimeFormat('de-AT', {
+    timeZone: 'Europe/Vienna',
     weekday: 'short',
     day: '2-digit',
     month: 'long',
