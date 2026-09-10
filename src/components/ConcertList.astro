@@ -1,5 +1,6 @@
 ---
 import type { Concert } from '@lib/content';
+import GalleryLightbox from './GalleryLightbox';
 
 interface Props {
   concerts: Concert[];
@@ -8,6 +9,15 @@ interface Props {
 }
 
 const { concerts, compact = false, emptyText = 'Neue Auftritte werden gerade abgestimmt.' } = Astro.props;
+
+const addressLines = (concert: Concert) => {
+  const address = concert.postalAddress;
+  const locality = [address?.postalCode, address?.city].map((part) => part?.trim()).filter(Boolean).join(' ');
+  const cityAndCountry = [locality, address?.country?.trim()].filter(Boolean).join(', ');
+  const lines = [address?.street, cityAndCountry]
+    .map((line) => line?.trim()).filter(Boolean);
+  return lines.length ? lines : concert.address?.split(/\n|,\s*/).map((line) => line.trim()).filter(Boolean) || [];
+};
 
 const formatConcertDate = (value: string) => {
   const date = new Date(value);
@@ -25,7 +35,7 @@ const formatConcertDate = (value: string) => {
 {concerts.length > 0 ? (
   <div class:list={['concert-list', { compact }]}>
     {concerts.map((concert) => (
-      <article class="concert-item">
+      <article class:list={['concert-item', { 'has-poster': concert.poster?.image }]}>
         <time class="concert-date" datetime={concert.startsAt}>
           <span class="concert-weekday">{formatConcertDate(concert.startsAt).weekday}</span>
           <span class="concert-day">{formatConcertDate(concert.startsAt).day}</span>
@@ -33,13 +43,25 @@ const formatConcertDate = (value: string) => {
           <span class="concert-year">{formatConcertDate(concert.startsAt).year}</span>
           <span class="concert-time">{formatConcertDate(concert.startsAt).time} Uhr</span>
         </time>
-        <div>
+        <div class="concert-details">
           <h3>{concert.title}</h3>
-          <p>{concert.venue}{concert.address ? `, ${concert.address}` : ''}</p>
+          {concert.venue && <p class="concert-venue">{concert.venue}</p>}
+          {addressLines(concert).length > 0 && (
+            <p class="concert-address">{addressLines(concert).map((line) => <span>{line}</span>)}</p>
+          )}
           {concert.status === 'cancelled' && <span class="status cancelled">Abgesagt</span>}
           {concert.status === 'soldOut' && <span class="status">Ausverkauft</span>}
+          {concert.infoUrl && <a class="text-link concert-info" href={concert.infoUrl}>Details</a>}
         </div>
-        {concert.infoUrl && <a class="text-link" href={concert.infoUrl}>Details</a>}
+        {concert.poster?.image && (
+          <div class="concert-poster">
+            <GalleryLightbox client:visible variant="poster" images={[{
+              ...concert.poster,
+              title: concert.title,
+              alt: concert.poster.alt || `Plakat: ${concert.title}`,
+            }]} />
+          </div>
+        )}
       </article>
     ))}
   </div>

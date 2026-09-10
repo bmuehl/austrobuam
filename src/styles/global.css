@@ -565,6 +565,7 @@ button:hover {
 
 .concert-list {
   display: grid;
+  grid-auto-rows: 1fr;
   gap: 0.8rem;
 }
 
@@ -574,7 +575,8 @@ button:hover {
 
 .concert-item {
   display: grid;
-  grid-template-columns: 10.25rem minmax(0, 1fr) auto;
+  min-height: calc(10rem + 2.1rem + 2px);
+  grid-template-columns: 10.25rem minmax(0, 1fr);
   align-items: center;
   gap: 1.2rem;
   padding: 1.05rem;
@@ -639,6 +641,42 @@ button:hover {
 .concert-item p {
   margin: 0.35rem 0 0;
   color: var(--muted);
+}
+
+.concert-item.has-poster {
+  grid-template-columns: 10.25rem minmax(0, 1fr) 7.5rem;
+}
+
+.concert-details { min-width: 0; overflow-wrap: anywhere; }
+.concert-item .concert-venue { color: var(--ink); font-weight: 600; }
+.concert-address { display: grid; gap: 0.1rem; font-size: 0.9rem; line-height: 1.5; }
+.concert-info { display: block; width: fit-content; margin-top: 0.75rem; }
+.concert-poster { width: 100%; min-width: 0; }
+.poster-preview-button {
+  position: relative;
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: 3px;
+  background: transparent;
+  cursor: zoom-in;
+}
+.poster-preview-button img {
+  display: block;
+  width: 100%;
+  height: 10rem;
+  object-fit: contain;
+  transition: transform 180ms ease;
+}
+.poster-preview-button:hover { background: transparent; }
+.poster-preview-button:hover img { transform: translateY(-3px); }
+.poster-preview-button:focus-visible { outline: 2px solid var(--red); outline-offset: 5px; }
+.poster-preview-button:hover .gallery-open-indicator,
+.poster-preview-button:focus-visible .gallery-open-indicator { opacity: 1; transform: translateY(0); }
+@media (prefers-reduced-motion: reduce) {
+  .poster-preview-button img { transition: none; }
+  .poster-preview-button:hover img { transform: none; }
 }
 
 .status {
@@ -1492,10 +1530,17 @@ textarea:focus {
   }
 
   .concert-item {
+    min-height: 0;
+    grid-template-rows: auto minmax(7rem, 1fr);
     grid-template-columns: 1fr;
     gap: 1rem;
     padding: 1rem;
   }
+
+  .concert-item.has-poster { grid-template-columns: minmax(0, 1fr) 5rem; }
+  .concert-item.has-poster .concert-date { grid-column: 1 / -1; }
+  .concert-poster { align-self: start; }
+  .poster-preview-button img { height: 7rem; }
 
   .concert-date {
     grid-template-columns: auto auto minmax(0, 1fr) auto;

@@ -21,6 +21,8 @@ export interface Concert {
   venue?: string;
   startsAt: string;
   address?: string;
+  postalAddress?: { street?: string; postalCode?: string; city?: string; country?: string };
+  poster?: GalleryImage;
   infoUrl?: string;
   status?: 'scheduled' | 'cancelled' | 'soldOut';
 }
@@ -113,6 +115,8 @@ export async function getConcerts(): Promise<Concert[]> {
       venue,
       startsAt,
       address,
+      postalAddress{street, postalCode, city, country},
+      "poster": poster{"image": asset->url, alt},
       infoUrl,
       status
     }`,

@@ -5,11 +5,12 @@ import type { GalleryImage } from '@lib/content';
 
 interface Props {
   images: GalleryImage[];
+  variant?: 'gallery' | 'poster';
 }
 
 const fallbackImage = sitePath('/images/logo.jpeg');
 
-export default function GalleryLightbox({ images }: Props) {
+export default function GalleryLightbox({ images, variant = 'gallery' }: Props) {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [direction, setDirection] = useState(0);
   const reduceMotion = useReducedMotion();
@@ -64,21 +65,21 @@ export default function GalleryLightbox({ images }: Props) {
 
   return (
     <>
-      <div className="gallery-grid">
+      <div className={variant === 'poster' ? 'poster-preview' : 'gallery-grid'}>
         {images.map((item, index) => (
           <button
             key={`${item.image || fallbackImage}-${index}`}
-            className={`gallery-card${item.featured ? ' featured' : ''}`}
+            className={variant === 'poster' ? 'poster-preview-button' : `gallery-card${item.featured ? ' featured' : ''}`}
             type="button"
             onClick={() => openImage(index)}
             aria-label={`${item.title || item.alt} öffnen`}
           >
             <img src={item.image ? `${item.image}?w=1000&auto=format&q=85` : fallbackImage} alt={item.alt} loading="lazy" />
             <span className="gallery-open-indicator" aria-hidden="true">Öffnen</span>
-            <span className="gallery-caption">
+            {variant === 'gallery' && <span className="gallery-caption">
               {item.title && <strong>{item.title}</strong>}
               {item.caption && <span>{item.caption}</span>}
-            </span>
+            </span>}
           </button>
         ))}
       </div>
@@ -130,7 +131,7 @@ export default function GalleryLightbox({ images }: Props) {
               )}
 
               <div className="gallery-lightbox-caption">
-                <span aria-live="polite" aria-atomic="true">Bild {activeIndex + 1} von {images.length}</span>
+                {hasMultipleImages && <span aria-live="polite" aria-atomic="true">Bild {activeIndex + 1} von {images.length}</span>}
                 {activeImage.title && <strong>{activeImage.title}</strong>}
                 {activeImage.caption && <p>{activeImage.caption}</p>}
               </div>

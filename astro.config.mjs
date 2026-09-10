@@ -34,6 +34,15 @@ export default defineConfig({
   base,
   output: 'static',
   integrations: [
+    {
+      name: 'isolated-dev-cache',
+      hooks: {
+        'astro:config:setup': ({ command, updateConfig }) => {
+          // Checks and builds must not replace chunks used by an open Studio tab.
+          updateConfig({ vite: { cacheDir: command === 'dev' ? 'node_modules/.vite-dev' : 'node_modules/.vite' } });
+        },
+      },
+    },
     sanity({
       projectId,
       dataset,
