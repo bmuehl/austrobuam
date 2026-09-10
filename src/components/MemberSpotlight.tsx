@@ -3,6 +3,7 @@ import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { useEffect, useState } from 'react';
 import type { CSSProperties } from 'react';
 import type { BandMember } from '@lib/content';
+import MemberVines from './MemberVines';
 
 interface Props {
   members: BandMember[];
@@ -45,7 +46,6 @@ export default function MemberSpotlight({ members }: Props) {
   return (
     <section className="member-stage">
       <div className="member-orbit" style={{ '--member-count': members.length } as CSSProperties}>
-        <div className="member-spotlight-pool" aria-hidden="true" />
         <motion.div
           className="member-spotlight-direction"
           aria-hidden="true"
@@ -55,6 +55,7 @@ export default function MemberSpotlight({ members }: Props) {
         >
           <div className="member-spotlight-beam" />
         </motion.div>
+        <MemberVines count={members.length} />
         <div className="member-orbit-ring" aria-label="Bandmitglieder auswählen">
           {members.map((member, index) => {
             const angle = ((360 / members.length) * index - 90) * Math.PI / 180;

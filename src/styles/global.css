@@ -738,29 +738,43 @@ button:hover {
   border-radius: 999px;
 }
 
-.member-spotlight-pool,
+.member-vines {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.member-vine-stem, .member-vine-twig {
+  fill: none;
+  stroke: #46564b;
+  stroke-linecap: round;
+}
+.member-vine-stem { stroke-width: 2.5; stroke-opacity: 0.45; }
+.member-vine-twig { stroke-width: 1.8; stroke-opacity: 0.5; }
+
 .member-spotlight-direction {
   position: absolute;
   pointer-events: none;
 }
 
-.member-spotlight-pool {
-  inset: 17%;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.94) 0%, rgba(255, 255, 255, 0.72) 48%, rgba(255, 255, 255, 0.24) 64%, transparent 73%);
-}
-
 .member-spotlight-direction {
   inset: 0;
   transform-origin: center;
-  filter: blur(9px);
 }
 
 .member-spotlight-beam {
   position: absolute;
-  inset: 8% 19% 23%;
+  inset: 9% 15% 23%;
+  filter: blur(6px);
+}
+
+.member-spotlight-beam::before {
+  content: '';
+  position: absolute;
+  inset: 0;
   clip-path: polygon(50% 0, 100% 85%, 85% 100%, 15% 100%, 0 85%);
-  background: linear-gradient(to bottom, rgba(244, 215, 171, 0.38), rgba(255, 247, 230, 0.56) 40%, rgba(255, 255, 255, 0.2) 75%, transparent);
+  background: linear-gradient(to bottom, rgba(247, 231, 183, 0.86), rgba(255, 245, 212, 0.84) 35%, rgba(255, 253, 242, 0.72) 65%, transparent);
 }
 
 .member-orbit-item {
@@ -797,11 +811,13 @@ button:hover {
 .member-orbit-item.active {
   border-color: var(--red);
   transform: translate(-50%, -50%) scale(1.16);
-  box-shadow: 0 0 0 1px var(--red), 0 6px 18px rgba(200, 25, 50, 0.12);
+  box-shadow: 0 0 0 1px var(--red), 0 0 24px rgba(221, 224, 214, 0.3), 0 6px 18px rgba(200, 25, 50, 0.12);
 }
 
 .member-orbit-item-inner {
   position: relative;
+  border-radius: 50%;
+  background: #f7f5f0;
   display: grid;
   place-items: center;
   width: 100%;
