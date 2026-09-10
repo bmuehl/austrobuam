@@ -40,7 +40,7 @@ const currentPath = Astro.url.pathname;
       <nav class="mobile-menu-links" aria-label="Hauptnavigation">
         {[...leftLinks, ...rightLinks].map((link, index) => (
           <a href={link.href} aria-current={currentPath === link.href ? 'page' : undefined} style={`--link-index: ${index}`}>
-            <span>{link.label}</span><span aria-hidden="true">↗</span>
+            <span>{link.label}</span><span aria-hidden="true">&#8599;&#65038;</span>
           </a>
         ))}
       </nav>
