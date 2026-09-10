@@ -1,12 +1,13 @@
 ---
+import { sitePath } from '@lib/paths';
 import BaseLayout from '@layouts/BaseLayout.astro';
 ---
 
 <BaseLayout title="Auftritte">
-  <meta http-equiv="refresh" content="0; url=/auftritte/" slot="head" />
+  <meta http-equiv="refresh" content={`0; url=${sitePath('/auftritte/')}`} slot="head" />
   <section class="page-hero compact-hero">
     <p class="eyebrow">Live</p>
     <h1>Auftritte</h1>
-    <p><a class="text-link" href="/auftritte/">Weiter zu den Auftritten</a></p>
+    <p><a class="text-link" href={sitePath('/auftritte/')}>Weiter zu den Auftritten</a></p>
   </section>
 </BaseLayout>

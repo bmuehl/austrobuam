@@ -1,4 +1,5 @@
 ---
+import { sitePath } from '@lib/paths';
 import type { GalleryImage } from '@lib/content';
 interface Props { photo: GalleryImage }
 const { photo } = Astro.props;
@@ -10,7 +11,7 @@ const { photo } = Astro.props;
     sizes="100vw" alt={photo.alt} width={photo.width} height={photo.height}
     loading="eager" fetchpriority="high" />
   <div class="stage-identity">
-    <h1 id="stage-title"><img src="/images/austrobuam.png" alt="Original Austrobuam" width="3780" height="531" /></h1>
+    <h1 id="stage-title"><img src={sitePath('/images/austrobuam.png')} alt="Original Austrobuam" width="3780" height="531" /></h1>
   </div>
 </section>
 

@@ -1,3 +1,4 @@
+import { sitePath } from '@lib/paths';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { useEffect, useState } from 'react';
 import type { CSSProperties } from 'react';
@@ -7,7 +8,7 @@ interface Props {
   members: BandMember[];
 }
 
-const fallbackImage = '/images/logo.webp';
+const fallbackImage = sitePath('/images/logo.webp');
 const rotationMs = 4500;
 
 export default function MemberSpotlight({ members }: Props) {

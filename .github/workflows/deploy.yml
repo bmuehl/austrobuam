@@ -24,8 +24,8 @@ jobs:
       - name: Install, build, and upload
         uses: withastro/action@v6
         env:
-          PUBLIC_SITE_URL: ${{ vars.PUBLIC_SITE_URL }}
-          PUBLIC_SITE_BASE: ${{ vars.PUBLIC_SITE_BASE }}
+          PUBLIC_SITE_URL: ${{ vars.PUBLIC_SITE_URL || 'https://bmuehl.github.io' }}
+          PUBLIC_SITE_BASE: ${{ vars.PUBLIC_SITE_BASE || '/austrobuam' }}
           PUBLIC_SANITY_PROJECT_ID: ${{ vars.PUBLIC_SANITY_PROJECT_ID }}
           PUBLIC_SANITY_DATASET: ${{ vars.PUBLIC_SANITY_DATASET }}
           PUBLIC_SANITY_API_VERSION: ${{ vars.PUBLIC_SANITY_API_VERSION }}

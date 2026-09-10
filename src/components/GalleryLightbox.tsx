@@ -1,3 +1,4 @@
+import { sitePath } from '@lib/paths';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { useEffect, useState } from 'react';
 import type { GalleryImage } from '@lib/content';
@@ -6,7 +7,7 @@ interface Props {
   images: GalleryImage[];
 }
 
-const fallbackImage = '/images/logo.jpeg';
+const fallbackImage = sitePath('/images/logo.jpeg');
 
 export default function GalleryLightbox({ images }: Props) {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);

@@ -1,4 +1,5 @@
 ---
+import { sitePath } from '@lib/paths';
 import BaseLayout from '@layouts/BaseLayout.astro';
 import HomeStage from '@components/HomeStage.astro';
 import { getConcerts, getSiteSettings, getUpcomingConcerts, formatDateTime } from '@lib/content';
@@ -12,7 +13,7 @@ const nextConcert = getUpcomingConcerts(await getConcerts())[0];
     <HomeStage photo={settings.homepagePhoto} />
   )}
   {nextConcert && (
-    <a class="home-concert-strip" href="/auftritte/">
+    <a class="home-concert-strip" href={sitePath('/auftritte/')}>
       <span>Nächster Auftritt</span>
       <strong>{formatDateTime(nextConcert.startsAt)}</strong>
       {nextConcert.venue && <span>{nextConcert.venue}</span>}
@@ -25,14 +26,14 @@ const nextConcert = getUpcomingConcerts(await getConcerts())[0];
       {settings.homepagePhoto?.image ? <h2>{settings.tagline}</h2> : <h1>{settings.tagline}</h1>}
       <p>{settings.intro}</p>
       {nextConcert && (
-        <a class="next-date-pill" href="/auftritte/">
+        <a class="next-date-pill" href={sitePath('/auftritte/')}>
           <span>Nächster Auftritt</span>
           <strong>{formatDateTime(nextConcert.startsAt)}</strong>
         </a>
       )}
       <div class="hero-actions">
-        <a class="button primary" href="/auftritte/">Auftritte</a>
-        <a class="button secondary" href="/kontakt/">Band buchen</a>
+        <a class="button primary" href={sitePath('/auftritte/')}>Auftritte</a>
+        <a class="button secondary" href={sitePath('/kontakt/')}>Band buchen</a>
       </div>
     </div>
   </section>
@@ -40,7 +41,7 @@ const nextConcert = getUpcomingConcerts(await getConcerts())[0];
     <div class="home-logo-wrap">
       <div class="home-logo-frame">
         <div class="home-cover-art">
-          <img src="/images/logo.webp" alt="Original Austrobuam Logo mit Musiknotenbaum" loading="lazy" />
+          <img src={sitePath('/images/logo.webp')} alt="Original Austrobuam Logo mit Musiknotenbaum" loading="lazy" />
         </div>
       </div>
     </div>
