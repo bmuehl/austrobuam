@@ -575,7 +575,7 @@ button:hover {
 
 .concert-item {
   display: grid;
-  min-height: calc(10rem + 2.1rem + 2px);
+  min-height: calc(8rem + 2.1rem + 2px);
   grid-template-columns: 10.25rem minmax(0, 1fr);
   align-items: center;
   gap: 1.2rem;
@@ -644,13 +644,24 @@ button:hover {
 }
 
 .concert-item.has-poster {
-  grid-template-columns: 10.25rem minmax(0, 1fr) 7.5rem;
+  grid-template-columns: 10.25rem minmax(0, 1fr) 6rem;
 }
 
 .concert-details { min-width: 0; overflow-wrap: anywhere; }
 .concert-item .concert-venue { color: var(--ink); font-weight: 600; }
 .concert-address { display: grid; gap: 0.1rem; font-size: 0.9rem; line-height: 1.5; }
+.concert-map-link { display: grid; gap: 0.1rem; width: fit-content; max-width: 100%; color: inherit; text-decoration: underline; text-decoration-color: var(--line); text-underline-offset: 0.2em; }
+.concert-map-link:hover { color: var(--red); text-decoration-color: currentColor; }
+.concert-map-link:focus-visible { outline: 2px solid var(--red); outline-offset: 4px; }
 .concert-info { display: block; width: fit-content; margin-top: 0.75rem; }
+.calendar-menu { position: relative; width: fit-content; max-width: 100%; margin-top: 0.75rem; font-size: 0.85rem; }
+.calendar-menu summary { cursor: pointer; color: var(--red); font-weight: 600; padding: 0.35rem 0; }
+.calendar-menu summary:focus-visible { outline: 2px solid var(--red); outline-offset: 3px; }
+.calendar-options { position: absolute; z-index: 10; top: 100%; left: 0; width: max-content; max-width: min(19rem, 75vw); display: grid; padding: 0.4rem; border: 1px solid var(--line); border-radius: 6px; background: white; box-shadow: 0 8px 24px #00000016; }
+.calendar-options a { display: block; padding: 0.65rem 0.8rem; overflow-wrap: anywhere; }
+.calendar-options a:hover, .calendar-options a:focus-visible { background: #f4f4f4; }
+.calendar-subscribe { margin: 0 0 1rem auto; }
+.calendar-subscribe .calendar-options { left: auto; right: 0; }
 .concert-poster { width: 100%; min-width: 0; }
 .poster-preview-button {
   position: relative;
@@ -665,8 +676,9 @@ button:hover {
 .poster-preview-button img {
   display: block;
   width: 100%;
-  height: 10rem;
+  height: 8rem;
   object-fit: contain;
+  object-position: right center;
   transition: transform 180ms ease;
 }
 .poster-preview-button:hover { background: transparent; }
@@ -674,6 +686,9 @@ button:hover {
 .poster-preview-button:focus-visible { outline: 2px solid var(--red); outline-offset: 5px; }
 .poster-preview-button:hover .gallery-open-indicator,
 .poster-preview-button:focus-visible .gallery-open-indicator { opacity: 1; transform: translateY(0); }
+@media (min-width: 901px) {
+  .concert-date { align-self: stretch; align-content: center; }
+}
 @media (prefers-reduced-motion: reduce) {
   .poster-preview-button img { transition: none; }
   .poster-preview-button:hover img { transform: none; }

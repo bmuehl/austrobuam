@@ -17,9 +17,12 @@ export interface BandMember {
 }
 
 export interface Concert {
+  _id: string;
+  _updatedAt: string;
   title: string;
   venue?: string;
   startsAt: string;
+  endsAt?: string;
   address?: string;
   postalAddress?: { street?: string; postalCode?: string; city?: string; country?: string };
   poster?: GalleryImage;
@@ -72,8 +75,10 @@ async function fetchFromSanity<T>(query: string, params?: Record<string, unknown
 
   try {
     return params ? await contentClient.fetch<T>(query, params) : await contentClient.fetch<T>(query);
-  } catch (error) {
-    console.warn('Sanity fetch failed, using empty content.', error);
+  } catch {
+    // Client errors may include authorization headers; never log the raw error.
+    if (import.meta.env.PROD) throw new Error('Sanity fetch failed; refusing to publish empty content.');
+    console.warn('Sanity fetch failed, using empty content.');
     return null;
   }
 }
@@ -111,9 +116,12 @@ export async function getBandMembers(): Promise<BandMember[]> {
 export async function getConcerts(): Promise<Concert[]> {
   const concerts = (await fetchFromSanity<Concert[]>(
     `*[_type == "concert"] | order(startsAt asc){
+      _id,
+      _updatedAt,
       title,
       venue,
       startsAt,
+      endsAt,
       address,
       postalAddress{street, postalCode, city, country},
       "poster": poster{"image": asset->url, alt},

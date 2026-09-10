@@ -2,10 +2,15 @@
 import BaseLayout from '@layouts/BaseLayout.astro';
 import ConcertList from '@components/ConcertList.astro';
 import { getConcerts, getPastConcerts, getUpcomingConcerts } from '@lib/content';
+import { sitePath } from '@lib/paths';
+import { calendarFiles } from '@lib/calendar';
 
 const concerts = await getConcerts();
+const files = calendarFiles(concerts);
 const upcoming = getUpcomingConcerts(concerts);
 const past = getPastConcerts(concerts);
+const feedUrl = new URL(sitePath('/auftritte.ics'), Astro.site || Astro.url.origin);
+const subscriptionUrl = feedUrl.href.replace(/^https?:/, 'webcal:');
 ---
 
 <BaseLayout title="Auftritte">
@@ -16,6 +21,14 @@ const past = getPastConcerts(concerts);
   </section>
 
   <section class="content-band performances-content">
+    <details class="calendar-menu calendar-subscribe">
+      <summary>Alle Auftritte abonnieren</summary>
+      <div class="calendar-options">
+        <a href={subscriptionUrl}>Apple Calendar / Outlook</a>
+        <a href={`https://calendar.google.com/calendar/r?${new URLSearchParams({ cid: feedUrl.href })}`} target="_blank" rel="noopener noreferrer">Google Calendar</a>
+        <a href={feedUrl.href}>Kalender-Feed (.ics)</a>
+      </div>
+    </details>
     <div class="performance-tabs" data-performance-tabs>
       <div class="tab-bar" role="tablist" aria-label="Auftritte filtern">
         <button class="tab-button active" type="button" role="tab" aria-selected="true" aria-controls="upcoming-performances" id="tab-upcoming" data-tab-target="upcoming-performances">
@@ -29,10 +42,10 @@ const past = getPastConcerts(concerts);
       </div>
 
       <div class="tab-panel" id="upcoming-performances" role="tabpanel" aria-labelledby="tab-upcoming">
-        <ConcertList concerts={upcoming} emptyText="Keine kommenden Auftritte vorhanden." />
+        <ConcertList concerts={upcoming} calendarFiles={files} emptyText="Keine kommenden Auftritte vorhanden." />
       </div>
       <div class="tab-panel" id="past-performances" role="tabpanel" aria-labelledby="tab-past" hidden>
-        <ConcertList concerts={past} emptyText="Noch keine vergangenen Auftritte vorhanden." />
+        <ConcertList concerts={past} calendarFiles={files} emptyText="Noch keine vergangenen Auftritte vorhanden." />
       </div>
     </div>
   </section>

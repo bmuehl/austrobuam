@@ -10,6 +10,14 @@ export default defineType({
     defineField({ name: 'venue', title: 'Ort/Location', type: 'string' }),
     defineField({ name: 'startsAt', title: 'Datum und Uhrzeit', type: 'datetime', validation: (rule) => rule.required() }),
     defineField({
+      name: 'endsAt', title: 'Ende (optional)', type: 'datetime',
+      validation: (rule) => rule.custom((value, context) => {
+        const start = context.document?.startsAt;
+        return !value || typeof start !== 'string' || new Date(value) > new Date(start)
+          ? true : 'Das Ende muss nach dem Beginn liegen.';
+      }),
+    }),
+    defineField({
       name: 'postalAddress', title: 'Adresse', type: 'object',
       initialValue: { country: 'Österreich' },
       fields: [

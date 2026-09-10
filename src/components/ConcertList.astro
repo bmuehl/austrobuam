@@ -1,14 +1,18 @@
 ---
 import type { Concert } from '@lib/content';
 import GalleryLightbox from './GalleryLightbox';
+import { calendarFilename, googleCalendarUrl } from '@lib/calendar';
+import { sitePath } from '@lib/paths';
 
 interface Props {
   concerts: Concert[];
+  calendarFiles: Record<string, string>;
   compact?: boolean;
   emptyText?: string;
 }
 
-const { concerts, compact = false, emptyText = 'Neue Auftritte werden gerade abgestimmt.' } = Astro.props;
+const { concerts, calendarFiles, compact = false, emptyText = 'Neue Auftritte werden gerade abgestimmt.' } = Astro.props;
+const pageUrl = new URL(sitePath('/auftritte/'), Astro.site || Astro.url.origin).href;
 
 const addressLines = (concert: Concert) => {
   const address = concert.postalAddress;
@@ -17,6 +21,11 @@ const addressLines = (concert: Concert) => {
   const lines = [address?.street, cityAndCountry]
     .map((line) => line?.trim()).filter(Boolean);
   return lines.length ? lines : concert.address?.split(/\n|,\s*/).map((line) => line.trim()).filter(Boolean) || [];
+};
+
+const mapsUrl = (concert: Concert) => {
+  const query = [concert.venue, ...addressLines(concert)].filter(Boolean).join(', ');
+  return `https://www.google.com/maps/search/?${new URLSearchParams({ api: '1', query })}`;
 };
 
 const formatConcertDate = (value: string) => {
@@ -47,11 +56,25 @@ const formatConcertDate = (value: string) => {
           <h3>{concert.title}</h3>
           {concert.venue && <p class="concert-venue">{concert.venue}</p>}
           {addressLines(concert).length > 0 && (
-            <p class="concert-address">{addressLines(concert).map((line) => <span>{line}</span>)}</p>
+            <p class="concert-address">
+              <a class="concert-map-link" href={mapsUrl(concert)} target="_blank" rel="noopener noreferrer"
+                aria-label={`${addressLines(concert).join(', ')} in Google Maps öffnen (neuer Tab)`}>
+                {addressLines(concert).map((line) => <span>{line}</span>)}
+              </a>
+            </p>
           )}
           {concert.status === 'cancelled' && <span class="status cancelled">Abgesagt</span>}
           {concert.status === 'soldOut' && <span class="status">Ausverkauft</span>}
           {concert.infoUrl && <a class="text-link concert-info" href={concert.infoUrl}>Details</a>}
+          {concert.status !== 'cancelled' && (
+            <details class="calendar-menu">
+              <summary>Zum Kalender hinzufügen</summary>
+              <div class="calendar-options">
+                <a href={googleCalendarUrl(concert, pageUrl)} target="_blank" rel="noopener noreferrer">Google Calendar</a>
+                <a href={sitePath(`/kalender/${calendarFiles[concert._id]}`)} download={calendarFilename(concert)}>Apple / Outlook (.ics)</a>
+              </div>
+            </details>
+          )}
         </div>
         {concert.poster?.image && (
           <div class="concert-poster">
