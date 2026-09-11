@@ -19,12 +19,12 @@ const description = Astro.props.description || settings.intro;
 ---
 
 <!doctype html>
-<html lang="de">
+<html lang="de" class:list={{ 'standard-header-page': !Astro.props.immersiveHeader, 'immersive-header-page': Astro.props.immersiveHeader }}>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="description" content={description} />
-    <meta name="theme-color" content="#101010" />
+    <meta name="theme-color" content={Astro.props.immersiveHeader ? '#000000' : '#fffaf1'} />
     <link rel="icon" href={sitePath('/images/logo.webp')} />
     <title>{pageTitle}</title>
     <slot name="head" />

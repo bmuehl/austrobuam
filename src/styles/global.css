@@ -25,6 +25,24 @@ html {
   scroll-behavior: smooth;
 }
 
+html.standard-header-page {
+  background-color: var(--bg-strong);
+}
+
+.standard-header-page body {
+  background-color: var(--bg-strong);
+}
+
+html.immersive-header-page,
+.immersive-header-page body {
+  background-color: #000000;
+}
+
+html.immersive-header-page.header-solid,
+.immersive-header-page.header-solid body {
+  background-color: var(--bg-strong);
+}
+
 body {
   margin: 0;
   min-width: 320px;
@@ -1400,13 +1418,18 @@ textarea:focus {
 }
 
 @media (max-width: 900px) {
+  .standard-header-page .site-header {
+    background: var(--bg-strong);
+    backdrop-filter: none;
+  }
+
   .site-header-inner {
     position: relative;
     z-index: 2;
     grid-template-columns: minmax(0, 1fr) 44px;
     gap: 1.25rem;
-    min-height: 76px;
-    padding: 1rem;
+    min-height: calc(76px + env(safe-area-inset-top, 0px));
+    padding: calc(1rem + env(safe-area-inset-top, 0px)) max(1rem, env(safe-area-inset-right, 0px)) 1rem max(1rem, env(safe-area-inset-left, 0px));
     background: var(--bg-strong);
   }
 
@@ -1482,8 +1505,8 @@ textarea:focus {
 
   .mobile-menu-links {
     display: grid;
-    padding: 1rem 1.5rem 2rem;
-    max-height: calc(100dvh - 76px);
+    padding: 1rem max(1.5rem, env(safe-area-inset-right, 0px)) calc(2rem + env(safe-area-inset-bottom, 0px)) max(1.5rem, env(safe-area-inset-left, 0px));
+    max-height: calc(100dvh - 76px - env(safe-area-inset-top, 0px));
     overflow-y: auto;
     overscroll-behavior: contain;
   }

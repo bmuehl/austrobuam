@@ -26,7 +26,7 @@ const { photo } = Astro.props;
   @media (max-width: 900px) {
     .home-stage { height: auto; min-height: 0; }
     .stage-photo { position: relative; display: block; height: auto; object-fit: contain; }
-    .home-stage::before { height: 100px; background: linear-gradient(#0009, transparent); }
+    .home-stage::before { height: calc(100px + env(safe-area-inset-top, 0px)); background: linear-gradient(#000000 0%, #000000b3 30%, #00000000 100%); }
     .home-stage::after { display: none; }
     .stage-identity { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); }
   }

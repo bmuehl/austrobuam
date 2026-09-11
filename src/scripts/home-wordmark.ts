@@ -11,13 +11,20 @@ export function setupHomeWordmark() {
   let origin = { x: 0, y: 0, width: 1 };
   let target = { x: 0, y: 0, width: 1 };
   let navOffset = 0;
+  const themeColor = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]');
+  const setHeaderSurface = (solid: boolean) => {
+    header.classList.toggle('is-scrolled', solid);
+    document.documentElement.classList.toggle('header-solid', solid && !mobile.matches);
+    const color = solid && !mobile.matches ? '#fffaf1' : '#000000';
+    if (themeColor && themeColor.content !== color) themeColor.content = color;
+  };
 
   const update = () => {
     frame = 0;
     const menuOpen = header.classList.contains('menu-open');
     if (mobile.matches) {
       heroLogo.style.opacity = '0';
-      header.classList.toggle('is-scrolled', menuOpen || window.scrollY > 48);
+      setHeaderSurface(menuOpen || window.scrollY > 48);
       header.classList.add('wordmark-ready');
       return;
     }
@@ -38,7 +45,7 @@ export function setupHomeWordmark() {
     const navShift = navOffset * (1 - navProgress) - 24 * Math.sin(Math.PI * progress);
     header.style.setProperty('--nav-shift', `${mobile.matches ? 0 : navShift}px`);
     heroLogo.style.opacity = String(crossfade ? 1 - progress : 0);
-    header.classList.toggle('is-scrolled', progress >= 1);
+    setHeaderSurface(progress >= 1);
     header.classList.add('wordmark-ready');
   };
 

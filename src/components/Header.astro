@@ -76,11 +76,11 @@ const currentPath = Astro.url.pathname;
   }
   @media (max-width: 900px) {
     .site-header-immersive { position: fixed; background: transparent; border-color: transparent; }
-    .site-header-immersive .site-header-inner { min-height: 64px; padding-block: 0.625rem; background: transparent; }
-    .site-header-immersive:not(.is-scrolled):not(.menu-open) .brand img { filter: brightness(0) invert(1) drop-shadow(0 1px 3px #0006); }
-    .site-header-immersive:not(.is-scrolled):not(.menu-open) .mobile-menu-toggle { color: white; }
-    .site-header-immersive.is-scrolled, .site-header-immersive.menu-open { background: #fffaf1; border-color: #17141215; box-shadow: 0 2px 16px #0000000c; }
-    .site-header-immersive.menu-open .site-header-inner { background: #fffaf1; }
+    .site-header-immersive .site-header-inner { min-height: calc(64px + env(safe-area-inset-top, 0px)); padding-block: calc(0.625rem + env(safe-area-inset-top, 0px)) 0.625rem; background: transparent; }
+    .site-header-immersive .brand img { filter: brightness(0) invert(1) drop-shadow(0 1px 3px #0006); }
+    .site-header-immersive .mobile-menu-toggle { color: white; }
+    .site-header-immersive.is-scrolled, .site-header-immersive.menu-open { background: #000000; border-color: #ffffff15; box-shadow: 0 2px 16px #0000000c; }
+    .site-header-immersive.menu-open .site-header-inner { background: #000000; }
   }
   @media (prefers-reduced-motion: reduce) { .site-header-immersive { transition: none; } }
 </style>
