@@ -30,6 +30,7 @@ const currentPath = Astro.url.pathname;
     <nav class="main-nav nav-right" aria-label="Hauptnavigation rechts">
       {rightLinks.map((link) => <a href={link.href}>{link.label}</a>)}
     </nav>
+    <a class="header-booking" href={sitePath('/kontakt/')}>Band buchen</a>
     <button class="mobile-menu-toggle" type="button" aria-label="Menü öffnen" aria-expanded="false" aria-controls="mobile-navigation">
       <span></span><span></span><span></span>
     </button>
@@ -49,8 +50,17 @@ const currentPath = Astro.url.pathname;
 </header>
 
 <style>
+  .header-booking { display: none; }
   .site-header-immersive { position: fixed; inset: 0 0 auto; background: transparent; border-color: #ffffff30; backdrop-filter: none; transition: background 200ms ease, box-shadow 200ms ease; }
   @media (min-width: 901px) {
+  .site-header { --brand-slot: clamp(190px, calc(100vw - 800px), 360px); }
+  .site-header-inner { max-width: 1440px; padding-inline: 150px; grid-template-columns: minmax(0, 1fr) var(--brand-slot) minmax(0, 1fr); }
+  .header-booking { display: inline-flex; position: absolute; right: 1.25rem; top: 50%; transform: translateY(-50%); align-items: center; justify-content: center; min-height: 42px; padding: 0.6rem 1rem; border: 1px solid transparent; border-radius: 6px; background: #b91f32; color: white; font-size: 0.875rem; font-weight: 750; text-decoration: none; white-space: nowrap; transition: background 180ms ease; }
+  .header-booking:hover { background: #971b2a; }
+  .header-booking:focus-visible { outline: 2px solid currentColor; outline-offset: 4px; }
+  .site-header-immersive:not(.is-scrolled) .header-booking { border-color: #ffffff60; }
+  /* Match the initial scroll position before the wordmark script measures the header. */
+  .site-header-immersive { --nav-shift: calc(var(--brand-slot) / 2 + clamp(0.75rem, 3vw, 2rem) - 4px); }
   .site-header-immersive:not(.is-scrolled):not(.menu-open) .site-header-inner { background: transparent; }
   .site-header-immersive:not(.is-scrolled):not(.menu-open) .brand img { filter: brightness(0) invert(1); }
   .site-header-immersive:not(.is-scrolled):not(.menu-open):not(.wordmark-ready) .brand img { visibility: hidden; }
@@ -65,8 +75,12 @@ const currentPath = Astro.url.pathname;
     .site-header-immersive .nav-right { transform: translateX(calc(-1 * var(--nav-shift, 0px))); }
   }
   @media (max-width: 900px) {
-    .site-header-immersive { position: sticky; background: #fffaf1; border-color: #17141215; transition: none; }
-    .site-header-immersive .site-header-inner { background: #fffaf1; }
+    .site-header-immersive { position: fixed; background: transparent; border-color: transparent; }
+    .site-header-immersive .site-header-inner { min-height: 64px; padding-block: 0.625rem; background: transparent; }
+    .site-header-immersive:not(.is-scrolled):not(.menu-open) .brand img { filter: brightness(0) invert(1) drop-shadow(0 1px 3px #0006); }
+    .site-header-immersive:not(.is-scrolled):not(.menu-open) .mobile-menu-toggle { color: white; }
+    .site-header-immersive.is-scrolled, .site-header-immersive.menu-open { background: #fffaf1; border-color: #17141215; box-shadow: 0 2px 16px #0000000c; }
+    .site-header-immersive.menu-open .site-header-inner { background: #fffaf1; }
   }
   @media (prefers-reduced-motion: reduce) { .site-header-immersive { transition: none; } }
 </style>

@@ -2,6 +2,7 @@
 import { sitePath } from '@lib/paths';
 import BaseLayout from '@layouts/BaseLayout.astro';
 import HomeStage from '@components/HomeStage.astro';
+import VineSeparator from '@components/VineSeparator';
 import { getConcerts, getSiteSettings, getUpcomingConcerts, formatDateTime } from '@lib/content';
 
 const settings = await getSiteSettings();
@@ -37,19 +38,21 @@ const nextConcert = getUpcomingConcerts(await getConcerts())[0];
       </div>
     </div>
   </section>
+  <VineSeparator client:visible />
   <div class="home-album">
     <div class="home-logo-wrap">
       <div class="home-logo-frame">
         <div class="home-cover-art">
           <img src={sitePath('/images/logo.webp')} alt="Original Austrobuam Logo mit Musiknotenbaum" loading="lazy" />
+          <span class="album-glare" aria-hidden="true"></span>
         </div>
       </div>
     </div>
   </div>
   <style>
-    .home-hero { min-height: 0; }
+    .home-hero { min-height: 0; padding-bottom: 1.5rem; }
     .home-copy h2 { max-width: 14ch; font-size: var(--page-heading-size); line-height: 1.18; }
-    .home-album { display: grid; place-items: center; padding: 0 1.5rem 5rem; }
+    .home-album { display: grid; place-items: center; padding: 2rem 1.5rem 5rem; }
     .home-album .home-logo-wrap { width: min(100%, 440px); min-width: 0; }
     .home-album .home-logo-wrap, .home-album .home-cover-art::after { animation-play-state: paused; }
     .home-album.is-visible .home-logo-wrap, .home-album.is-visible .home-cover-art::after { animation-play-state: running; }
@@ -57,45 +60,14 @@ const nextConcert = getUpcomingConcerts(await getConcerts())[0];
     .home-concert-strip > span:first-child { text-transform: uppercase; font-size: 0.75rem; font-weight: 800; }
     .home-concert-strip:hover { background: #971b2a; }
     .home-concert-strip:focus-visible { outline: 3px solid white; outline-offset: -6px; }
-    @media (max-width: 600px) { .home-concert-strip { flex-direction: column; gap: 0.4rem; text-align: center; } .home-concert-strip > span:last-child { display: none; } }
+    @media (max-width: 900px) {
+      .home-concert-strip { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0.25rem 1rem; padding: 1rem 1.25rem; text-align: left; }
+      .home-concert-strip > :not(:last-child) { grid-column: 1; }
+      .home-concert-strip > span:first-child { font-size: 0.625rem; opacity: 0.8; }
+      .home-concert-strip > span:last-child { grid-column: 2; grid-row: 1 / span 3; align-self: center; font-size: 1.5rem; }
+    }
   </style>
   <script>
-    const logoWrap = document.querySelector('.home-logo-wrap');
-    const logoFrame = document.querySelector('.home-logo-frame');
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const album = document.querySelector('.home-album');
-    if (album) {
-      const observer = new IntersectionObserver(([entry]) => {
-        if (entry.isIntersecting) {
-          album.classList.add('is-visible');
-          observer.disconnect();
-        }
-      }, { threshold: 0.15 });
-      observer.observe(album);
-    }
-
-    if (logoWrap instanceof HTMLElement && logoFrame instanceof HTMLElement && !reduceMotion.matches) {
-      logoWrap.addEventListener('pointermove', (event) => {
-        const rect = logoWrap.getBoundingClientRect();
-        const x = (event.clientX - rect.left) / rect.width - 0.5;
-        const y = (event.clientY - rect.top) / rect.height - 0.5;
-
-        logoFrame.style.setProperty('--tilt-x', `${(-y * 5).toFixed(2)}deg`);
-        logoFrame.style.setProperty('--tilt-y', `${(x * 7).toFixed(2)}deg`);
-        logoFrame.style.setProperty('--move-x', `${(x * 14).toFixed(2)}px`);
-        logoFrame.style.setProperty('--move-y', `${(y * 10).toFixed(2)}px`);
-        logoFrame.style.setProperty('--glow-x', `${((x + 0.5) * 100).toFixed(2)}%`);
-        logoFrame.style.setProperty('--glow-y', `${((y + 0.5) * 100).toFixed(2)}%`);
-      });
-
-      logoWrap.addEventListener('pointerleave', () => {
-        logoFrame.style.removeProperty('--tilt-x');
-        logoFrame.style.removeProperty('--tilt-y');
-        logoFrame.style.removeProperty('--move-x');
-        logoFrame.style.removeProperty('--move-y');
-        logoFrame.style.removeProperty('--glow-x');
-        logoFrame.style.removeProperty('--glow-y');
-      });
-    }
+    import '../scripts/album-tilt';
   </script>
 </BaseLayout>

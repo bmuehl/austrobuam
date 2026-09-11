@@ -16,20 +16,22 @@ const { photo } = Astro.props;
 </section>
 
 <style>
-  .home-stage { position: relative; isolation: isolate; height: min(880px, 88svh); min-height: 540px; background: #191817; }
-  .stage-photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 58%; }
+  .home-stage { position: relative; isolation: isolate; height: min(880px, 88svh); min-height: 540px; background: #191817; overflow: hidden; }
+  .stage-photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 58%; animation: stage-arrive 1600ms cubic-bezier(0.2, 0.7, 0.3, 1) both; }
   .home-stage::before { content: ''; position: absolute; z-index: 1; inset: 0 0 auto; height: 160px; background: linear-gradient(#000b, transparent); pointer-events: none; }
-  .stage-identity { position: absolute; z-index: 2; bottom: 1rem; inset-inline: 0; padding: 0.75rem 2rem; background: transparent; border: 0; }
+  .stage-identity { position: absolute; z-index: 2; bottom: calc(1rem + 20px); inset-inline: 0; padding: 0.75rem 2rem; background: transparent; border: 0; }
   h1 { margin: 0 auto; width: min(100%, 760px); max-width: none; line-height: 1; }
   h1 img { width: 100%; height: auto; filter: brightness(0) invert(1) drop-shadow(0 2px 8px #0009); }
   .home-stage::after { content: ''; position: absolute; inset: auto 0 0; height: 180px; background: linear-gradient(transparent, #0009); pointer-events: none; z-index: 1; }
   @media (max-width: 900px) {
     .home-stage { height: auto; min-height: 0; }
-    .stage-photo { position: relative; height: auto; object-fit: contain; }
-    .home-stage::before, .home-stage::after { display: none; }
+    .stage-photo { position: relative; display: block; height: auto; object-fit: contain; }
+    .home-stage::before { height: 100px; background: linear-gradient(#0009, transparent); }
+    .home-stage::after { display: none; }
     .stage-identity { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); }
   }
-  @media (prefers-reduced-motion: reduce) { .stage-identity { animation: none; } }
+  @keyframes stage-arrive { from { transform: scale(1.1); } to { transform: scale(1); } }
+  @media (prefers-reduced-motion: reduce) { .stage-identity, .stage-photo { animation: none; } }
 </style>
 
 <script>

@@ -15,6 +15,12 @@ export function setupHomeWordmark() {
   const update = () => {
     frame = 0;
     const menuOpen = header.classList.contains('menu-open');
+    if (mobile.matches) {
+      heroLogo.style.opacity = '0';
+      header.classList.toggle('is-scrolled', menuOpen || window.scrollY > 48);
+      header.classList.add('wordmark-ready');
+      return;
+    }
     const range = mobile.matches ? 100 : Math.max(160, origin.y - target.y);
     let progress = Math.min(1, Math.max(0, window.scrollY / range));
     if (reducedMotion.matches) progress = window.scrollY > 48 ? 1 : 0;
