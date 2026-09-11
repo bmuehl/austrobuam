@@ -810,7 +810,7 @@ button:hover {
 
 .member-orbit-item.active {
   border-color: var(--red);
-  transform: translate(-50%, -50%) scale(1.16);
+  transform: translate(-50%, -50%) scale(1.24);
   box-shadow: 0 0 0 1px var(--red), 0 0 24px rgba(221, 224, 214, 0.3), 0 6px 18px rgba(200, 25, 50, 0.12);
 }
 
